@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>subdomain takeover test — light-zero</title>
+
+  <!-- Verification token: replace before uploading -->
+  <meta name="takeover-verification" content="REPLACE_WITH_TOKEN_123">
+
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#38bdf8;--muted:#a8b3c7}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    body{background:linear-gradient(135deg,var(--bg),#061025);display:flex;align-items:center;justify-content:center;color:#e6eef8}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:28px;border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6);max-width:820px;width:95%}
+    h1{margin:0 0 8px;font-size:20px;letter-spacing:-0.3px}
+    p{margin:6px 0;color:var(--muted)}
+    .banner{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),#60a5fa);color:#021024;font-weight:700;margin-bottom:12px}
+    .info{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+    .chip{background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;font-size:13px;color:var(--muted)}
+    footer{margin-top:18px;font-size:13px;color:var(--muted)}
+    code{background:rgba(255,255,255,0.02);padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <div class="banner">TAKEOVER TEST PAGE</div>
+    <h1 id="title">light-zero — subdomain takeover verification</h1>
+    <p>This page is a safe demonstration page used to verify that a subdomain can be pointed at your hosted content. It includes a verification token and shows the current host.</p>
+
+    <div class="info" aria-live="polite">
+      <div class="chip">Host: <strong id="host">loading…</strong></div>
+      <div class="chip">Time: <strong id="time">—</strong></div>
+      <div class="chip">Token: <strong id="token">REPLACE_WITH_TOKEN_123</strong></div>
+    </div>
+
+    <section style="margin-top:14px">
+      <p>Instructions (quick):</p>
+      <ol>
+        <li>Replace the token in the meta tag and the visible token text with a random string (for proof).</li>
+        <li>Upload this `index.html` to your hosting (GitHub Pages / Netlify / S3 / etc.).</li>
+        <li>When the vulnerable subdomain's CNAME/ALIAS is pointed to your host, visit the subdomain and confirm the host & token match.</li>
+      </ol>
+    </section>
+
+    <footer>Made for testing. Do not include any sensitive data here.</footer>
+  </main>
+
+  <script>
+    // Display current host and time; read verification token from meta
+    (function(){
+      const hostEl = document.getElementById('host');
+      const timeEl = document.getElementById('time');
+      const tokenEl = document.getElementById('token');
+
+      const now = new Date();
+      hostEl.textContent = location.hostname + (location.port ? ':' + location.port : '');
+      timeEl.textContent = now.toISOString().replace('T',' ').replace('Z',' UTC');
+      const meta = document.querySelector('meta[name="takeover-verification"]');
+      const token = meta ? meta.content : 'none';
+      tokenEl.textContent = token;
+      // extra: print to console for bug-bounty screenshots
+      console.log('takeover-verification-token:', token);
+      console.log('served-from-host:', location.hostname);
+    })();
+  </script>
+</body>
+</html>
